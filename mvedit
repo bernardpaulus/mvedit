@@ -97,15 +97,25 @@ then
             fi
         fi
     done
-
-    $MV_COMMAND "$clean_dir/"* .
-    if [ -z "$(ls -A $clean_dir)" ]
-    then rmdir "$clean_dir"
-    fi
 else
     echo "Error: file lengths don't match! Empty line to delete a file."
     cp "$editfile" "$backup_on_error"
     echo "> Saved your version in $backup_on_error"
+fi
+
+if [ -n "$(ls -A $clean_dir)" ]
+then 
+    for f in "$clean_dir/."* "$clean_dir/"*
+    do 
+        if [ "$f" != "$clean_dir/." -a "$f" != "$clean_dir/.." ]
+        then $MV_COMMAND "$f" . 
+        fi
+    done
+fi
+
+if [ -z "$(ls -A $clean_dir)" ]
+then rmdir "$clean_dir"
+else echo "files that should have overwritten files are in $clean_dir/"
 fi
 
 rm $tmpfile $editfile
