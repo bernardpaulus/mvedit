@@ -17,6 +17,14 @@ then
     exit 0
 fi
 
+# easy directory support
+function rmdir_or_rm() { 
+    if [ -d "$1" ] 
+    then rmdir "$1" 
+    else rm "$1" 
+    fi 
+}
+
 quiet="false"
 if [ "$1" == "-q" -o "$1" == "--quiet" ]
 then 
@@ -41,7 +49,7 @@ editfilename="mvedit_edit$RANDOM.tmp"
 editfile="/tmp/$editfilename"
 backup_on_error="$editfilename.bak"
 MV_COMMAND="mv"
-RM_COMMAND="rm"
+RM_COMMAND="rmdir_or_rm"
 ls -1a | grep -v '^\.$' | grep -v '^\.\.$' > "$tmpfile"
 cp "$tmpfile" "$editfile"
 $EDITOR "$editfile"
