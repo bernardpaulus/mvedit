@@ -1,0 +1,75 @@
+#!/bin/bash
+# TODO:
+# - git/svn support
+# - whitespace lines as delete?
+# - two files exchange names
+# - two target files have the same name
+# - editor switch in options (use nano if no $EDITOR value
+if [ "$1" == "-h" -o "$1" == "-help" -o "$1" == "--help" ]
+then 
+    echo "moves multiple files at once by letting you edit the directory listing"
+    echo "a listing of the current directory will be shown." 
+    echo "You can edit that listing, so that"
+    echo "each file is moved to the new filename present on the line"
+    echo "empty line definitively deletes a file"
+    echo "THIS VERSION DOESN'T SUPPORT FILE INTERCHANGE"
+    echo "option -q, --quiet suppresses most of the output"
+    exit 0
+fi
+
+quiet="false"
+if [ "$1" == "-q" -o "$1" == "--quiet" ]
+then 
+    quiet="true"
+fi
+
+if [ ! -x "$EDITOR" ]
+then
+    echo "\$EDITOR should be set to your preferred editor"
+    echo "you can set it with"
+    echo "export EDITOR=YOUR_EDITOR"
+    exit -1
+fi
+
+# prints line of file $1 at line $2
+function printlineat {
+     cat -n "$1" | awk "\$1 == $2 {print;}" | cut --complement --fields=1
+}
+
+tmpfile="/tmp/mveditsource$RANDOM.tmp"
+editfilename="mvedit_edit$RANDOM.tmp"
+editfile="/tmp/$editfilename"
+backup_on_error="$editfilename.bak"
+MV_COMMAND="mv"
+RM_COMMAND="rm"
+ls -1a | grep -v '^\.$' | grep -v '^\.\.$' > "$tmpfile"
+cp "$tmpfile" "$editfile"
+$EDITOR "$editfile"
+nlinestmp=`wc -l "$tmpfile" | awk '{print $1}'`
+nlinesedit=`wc -l "$editfile" | awk '{print $1}'`
+if [ $nlinestmp -eq $nlinesedit ]
+then
+    for i in `seq 1 $nlinesedit`
+    do
+        orig=`printlineat $tmpfile $i`
+        target=`printlineat $editfile $i`
+        if [ "$orig" != "$target" ]
+        then
+            if [ "$target" == "" ]
+            then 
+                [ "$quiet" == "false" ] && echo "$i/$nlinesedit: RM $orig"
+                $RM_COMMAND "$orig"
+            else
+                [ "$quiet" == "false" ] && echo "$i/$nlinesedit: MV $orig $target"
+                $MV_COMMAND "$orig" "$target"
+            fi
+        fi
+    done
+else
+    echo "Error: file lengths don't match! Empty line to delete a file."
+    cp "$editfile" "$backup_on_error"
+    echo "> Saved your version in $backup_on_error"
+fi
+
+rm $tmpfile $editfile
+
