@@ -10,15 +10,12 @@ This opens an editor with one line per file of the current directory.
 
 Happy directory editing!
 
-Contribute
-==========
 
-Any help is welcomed, especially with the bugs :)
 
-See Bugs below, or TODO 's in the file.
+When you're done, any help/idea/contribution is welcome! 
+Cookies also are, but their rate of survival is quite low :D
 
 Bugs
 ======
 
-Beware, special things like exchanging the names of two files or moving two
-files to the same filename is still not handled.
+No known bug! Yaay :D
