@@ -3,6 +3,7 @@
 # - git/svn support
 # - whitespace lines as delete?
 # - editor switch in options (use nano if no $EDITOR value is not set)
+# - improve performance: printlineat is quite the ugly thing
 if [ "$1" == "-h" -o "$1" == "-help" -o "$1" == "--help" ]
 then 
     echo "moves multiple files at once by letting you edit the directory listing"
@@ -65,15 +66,15 @@ backup_on_error="$editfilename.bak"
 MV_COMMAND="mv -i"
 RM_COMMAND="rmdir_or_rm"
 
+ls -1A > "$tmpfile"
+cp "$tmpfile" "$editfile"
+$EDITOR "$editfile"
+
 unique_dir "mvedit_clean_dir$RANDOM"
 if [ -n "$dirname" ]
 then clean_dir="$dirname"
 else exit -1
 fi
-
-ls -1A > "$tmpfile"
-cp "$tmpfile" "$editfile"
-$EDITOR "$editfile"
 nlinestmp=`wc -l "$tmpfile" | awk '{print $1}'`
 nlinesedit=`wc -l "$editfile" | awk '{print $1}'`
 if [ $nlinestmp -eq $nlinesedit ]
