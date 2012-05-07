@@ -1,6 +1,7 @@
-**Move/delete multiple files at once!**
+Move/delete multiple files at once!
+===================================
 
-*download: see tags*
+**downloads: see tags tab**
 
 mvedit opens an editor with one line per file of the current directory, so that
 you can edit your directory, perform search & replace, ...
