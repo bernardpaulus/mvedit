@@ -20,3 +20,20 @@ Bugs
 ======
 
 No known bug! Yaay :D
+
+
+Alternatives
+============
+
+Editing directories with a text editor is a good idea: it is as powerful as your
+text editor :)
+
+However, i'm not the first one to have had this idea:
+
+on github:
+
+https://github.com/weisslj/dir-edit
+
+and waaaayyy older, Dired:
+
+https://en.wikipedia.org/wiki/Dired
